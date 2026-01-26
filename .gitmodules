@@ -1,0 +1,3 @@
+[submodule "Assets/Scripts/Gaming-Study"]
+	path = Assets/Scripts/Gaming-Study
+	url = https://github.com/ggdrn/Gaming-Study.git
