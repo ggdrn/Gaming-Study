@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Moviments))]
 [RequireComponent(typeof(Attacks))]
 [RequireComponent(typeof(PlayerInput))] // Garante que o componente PlayerInput esteja no objeto
-public class Hero : MonoBehaviour
+public class Player : MonoBehaviour
 {
     private Moviments moviments;
     private Attacks attacks;
@@ -13,7 +13,12 @@ public class Hero : MonoBehaviour
     private InputAction attackAction;
     private InputAction moveAction;
     private InputAction jumpAction;
+    public static Player Instance;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
         moviments = GetComponent<Moviments>();

@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Hero))]
-public class HeroController: Hero
+[RequireComponent(typeof(Player))]
+public class HeroController: Player
 {
     
 }
