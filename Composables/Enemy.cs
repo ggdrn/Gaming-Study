@@ -31,9 +31,9 @@ public class Enemy : MonoBehaviour
         
     }
 
-    public virtual void OnHit()
+    public void OnHit()
     {
-        
+        Debug.Log("RECEBA");
     }
     public virtual void Follow()
     {
