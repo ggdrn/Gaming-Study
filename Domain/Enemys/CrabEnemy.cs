@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CrabEnemy : Enemy
 {
-    void Awake()
+    void Start()
     {
         damage = 10;
         enemyName = "Carangueijo";

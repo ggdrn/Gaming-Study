@@ -1,42 +1,72 @@
-using Unity.Mathematics;
+using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Renderer))]
 public class Enemy : MonoBehaviour
 {
+    [Header("Stats")]
     public int life;
     public string enemyName;
     public float damage;
-    public bool isPlayerVisible;
+    public float detectionRadius = 4f;
+    public float rotationSpeed = 10f;
+    public GameObject hitFx;
+    public Animator animator;
+    public Renderer enemyRenderer;
+    
+    protected Color originalColor;
+    protected bool isPlayerVisible;
+    private Collider enemyCollider;
 
-    public float detectionRadius;
-    public float rotationSpeed;
-
+    // Mudamos para protected virtual para que os filhos (CrabEnemy) possam usar
     void Awake()
     {
-        detectionRadius = 4f;
-        rotationSpeed = 10f;
+        animator = GetComponent<Animator>() ?? GetComponentInChildren<Animator>();
+        enemyRenderer = GetComponent<Renderer>() ?? GetComponentInChildren<Renderer>();
+        enemyCollider = GetComponent<Collider>();
+        if (enemyRenderer != null) originalColor = enemyRenderer.material.color;
     }
-    public virtual void Attacl()
+    void Reset()
     {
-        
-    }
-
-    public virtual void Move()
-    {
-        
-    }
-
-    public virtual void Death()
-    {
-        
+        animator = GetComponent<Animator>() ?? GetComponentInChildren<Animator>();
     }
 
     public void OnHit()
     {
-        Debug.Log("RECEBA");
+        if (animator != null) animator.SetTrigger("hit");
+        
+        StartCoroutine(HitFlash());
+        if (hitFx != null)
+        {
+            float height = (enemyCollider != null) ? enemyCollider.bounds.extents.y : 1f;
+            Vector3 spawnPos = transform.position + new Vector3(0f, height, 0f);
+            GameObject hitEffect = Instantiate(hitFx, spawnPos, transform.rotation);
+            Destroy(hitEffect, 2f);
+        }
     }
+
+    IEnumerator HitFlash()
+    {
+        if (enemyRenderer == null) yield break;
+        for (int i = 0; i < 2; i++)
+        {
+            enemyRenderer.material.color = Color.red;
+            yield return new WaitForSeconds(0.2f);
+            enemyRenderer.material.color = originalColor; // Volta para a cor real dele
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+    public virtual void Attack() { }
+
+    public virtual void Move() { }
+
+    public virtual void Death() { }
+
     public virtual void Follow()
     {
+        if (Player.Instance == null) return;
+
         if (!isPlayerVisible)
         {
             float distance = Vector3.Distance(transform.position, Player.Instance.transform.position);
@@ -44,17 +74,19 @@ public class Enemy : MonoBehaviour
             {
                 isPlayerVisible = true;
             }
-        }else
+        }
+        else
         {
             RotateToPlayer();
         }
     }
 
-    void RotateToPlayer()
+    protected void RotateToPlayer()
     {
+        if (Player.Instance == null) return;
         Vector3 direction = (Player.Instance.transform.position - transform.position).normalized;
         direction.y = 0f;
-        if(direction != Vector3.zero)
+        if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);

@@ -8,7 +8,6 @@ public class AttackHitBox : MonoBehaviour
     {
         enemyLayer = LayerMask.NameToLayer("Enemy");
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == enemyLayer)
