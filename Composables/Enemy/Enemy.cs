@@ -3,6 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Renderer))]
+[RequireComponent(typeof(Target))]
 public class Enemy : MonoBehaviour
 {
     [Header("Stats")]
@@ -14,16 +15,18 @@ public class Enemy : MonoBehaviour
     public GameObject hitFx;
     public Animator animator;
     public Renderer enemyRenderer;
-    
+
     protected Color originalColor;
     protected bool isPlayerVisible;
     private Collider enemyCollider;
 
     // Mudamos para protected virtual para que os filhos (CrabEnemy) possam usar
-    void Awake()
+    // No Enemy.cs
+    protected virtual void Awake() // Mude para protected virtual
     {
-        animator = GetComponent<Animator>() ?? GetComponentInChildren<Animator>();
-        enemyRenderer = GetComponent<Renderer>() ?? GetComponentInChildren<Renderer>();
+        // Procura no objeto principal ou nos filhos (comum em modelos 3D importados)
+        if (animator == null) animator = GetComponentInChildren<Animator>();
+        if (enemyRenderer == null) enemyRenderer = GetComponentInChildren<Renderer>();
         enemyCollider = GetComponent<Collider>();
         if (enemyRenderer != null) originalColor = enemyRenderer.material.color;
     }
@@ -35,7 +38,7 @@ public class Enemy : MonoBehaviour
     public void OnHit()
     {
         if (animator != null) animator.SetTrigger("hit");
-        
+
         StartCoroutine(HitFlash());
         if (hitFx != null)
         {

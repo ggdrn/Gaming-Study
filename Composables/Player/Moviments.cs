@@ -46,33 +46,33 @@ public class Moviments : MonoBehaviour
         animator.SetFloat("Speed", input.magnitude);
     }
 
-    // private float verticalVelocity = 0f;
-    // private float jumpForce = 10f;
-    // private float gravity = -9.81f;
+    private float verticalVelocity = 0f;
+    private float jumpForce = 10f;
+    private float gravity = -9.81f;
 
-    // public void ProcessJump()
-    // {
-    //     if (!isJumping)
-    //     {
-    //         animator.SetTrigger("Jump");
-    //         isJumping = true;
-    //         verticalVelocity = jumpForce;
-    //         Invoke(nameof(ResetJump), jumpCooldown);
-    //     }
-    // }
+    public void ProcessJump()
+    {
+        if (!isJumping)
+        {
+            animator.SetTrigger("Jump");
+            isJumping = true;
+            verticalVelocity = jumpForce;
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+    }
 
-    // void Update()
-    // {
-    //     if (isJumping)
-    //     {
-    //         verticalVelocity += gravity * Time.deltaTime;
-    //         Vector3 jumpMovement = Vector3.up * verticalVelocity * Time.deltaTime;
-    //         controller.Move(jumpMovement);
-    //     }
-    // }
+    void Update()
+    {
+        if (isJumping)
+        {
+            verticalVelocity += gravity * Time.deltaTime;
+            Vector3 jumpMovement = Vector3.up * verticalVelocity * Time.deltaTime;
+            controller.Move(jumpMovement);
+        }
+    }
 
-    // private void ResetJump()
-    // {
-    //     isJumping = false;
-    // }
+    private void ResetJump()
+    {
+        isJumping = false;
+    }
 }

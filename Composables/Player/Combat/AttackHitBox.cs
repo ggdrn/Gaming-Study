@@ -1,5 +1,5 @@
 using UnityEngine;
-
+// Scrript fica na arma que vai acertar o Objeto, não se esqueça que ela deve compor
 public class AttackHitBox : MonoBehaviour
 {
     private int enemyLayer;
