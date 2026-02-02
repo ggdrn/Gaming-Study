@@ -32,23 +32,14 @@ public class Targeter : MonoBehaviour
 
     public bool SelectTarget()
     {
-        // Desliga o visual do alvo antigo antes de trocar ou limpar
-        // if (currentTarget != null)
-        // {
-        //     // currentTarget.SetTargetVisual(false);
-        // }
-
         if (_targets.Count == 0)
         {
             currentTarget = null;
             return false;
         }
-
         if (currentTarget != null)
         {
             int currentIndex = _targets.IndexOf(currentTarget);
-
-            // Lógica de Toggle (ao chegar no fim da lista, desliga o lock-on)
             if (currentIndex + 1 >= _targets.Count)
             {
                 currentTarget.SetTargetALock(false);
