@@ -2,12 +2,21 @@ using UnityEngine;
 
 public class TargetIndicator : MonoBehaviour
 {
-    // void Update() => transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
+    [SerializeField] private BillboardType billboardType;
+    public enum BillboardType { LookAtCamera, CameraForward };
     void LateUpdate()
     {
-        // Faz a imagem sempre encarar a câmera principal
-        transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, 
-                         Camera.main.transform.rotation * Vector3.up);
+        switch (billboardType)
+        {
+            case BillboardType.LookAtCamera:
+                transform.LookAt(Camera.main.transform.position, Vector3.up);
+                break;
+            case BillboardType.CameraForward:
+                transform.forward = Camera.main.transform.forward;
+                break;
+            default:
+                break;
+        }
+
     }
-    void Update() => transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
 }

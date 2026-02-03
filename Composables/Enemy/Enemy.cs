@@ -3,7 +3,6 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Renderer))]
-[RequireComponent(typeof(Target))]
 public class Enemy : MonoBehaviour
 {
     [Header("Stats")]

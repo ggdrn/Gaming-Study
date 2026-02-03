@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     private InputAction attackAction;
     private InputAction moveAction;
     private InputAction jumpAction;
+    private InputAction lockOnToLAction;
+    private InputAction lockOnToRAction;
     public static Player Instance;
     public Targeter targeter;
     public InputAction targeterAction;
@@ -35,7 +37,7 @@ public class Player : MonoBehaviour
         // INICIALIZAÇÃO DA CÂMERA:
         // Busca o Animator no objeto "State-Driven Camera" dentro do Player
         cameraStateAnimator = GetComponentInChildren<CinemachineStateDrivenCamera>().GetComponent<Animator>();
-        
+
         // Busca a Target Camera especificamente pelo nome ou tipo nos filhos
         targetCamera = transform.Find("State-Driven Camera/Target Camera").GetComponent<CinemachineCamera>();
 
@@ -44,6 +46,8 @@ public class Player : MonoBehaviour
         moveAction = playerInput.actions["Move"];
         jumpAction = playerInput.actions["Jump"];
         targeterAction = playerInput.actions["LockOn"];
+        lockOnToLAction = playerInput.actions["LockOnToL"];
+        lockOnToRAction = playerInput.actions["LockOnToR"];
     }
 
     void Update()
@@ -59,20 +63,37 @@ public class Player : MonoBehaviour
         }
         else moviments.ProcessMove(0, 0); // Para o personagem durante o ataque
         if (!targeter.currentTarget && cameraStateAnimator.GetBool("IsLocked")) cameraStateAnimator.SetBool("IsLocked", false);
+        // Só permite troca se existir um alvo atual
+        if (targeter.currentTarget != null)
+        {
+            // LockOn para ESQUERDA
+            if (lockOnToLAction.WasPressedThisFrame())
+            {
+                targeter.SwitchTarget(
+                    Targeter.LockOnDirection.ToLeft,
+                    Camera.main
+                );
+                targetCamera.LookAt = targeter.currentTarget.transform;
+            }
+            // LockOn para DIREITA
+            if (lockOnToRAction.WasPressedThisFrame())
+            {
+                targeter.SwitchTarget(
+                    Targeter.LockOnDirection.ToRight,
+                    Camera.main
+                );
+                targetCamera.LookAt = targeter.currentTarget.transform;
+            }
+        }
 
     }
 
     void SwitchCameras()
     {
         bool hasTarget = targeter.SelectTarget();
-
-        if (hasTarget && targeter.currentTarget != null)
+        if (hasTarget)
         {
-            // 1. Define o alvo na Target Camera
             targetCamera.LookAt = targeter.currentTarget.transform;
-
-            // 2. Avisa o Animator para trocar de estado (Ex: parâmetro bool 'IsLocked')
-            // Certifique-se de que no State-Driven Camera, a 'Target Camera' responda a esse estado
             if (cameraStateAnimator != null) cameraStateAnimator.SetBool("IsLocked", true);
         }
         else
